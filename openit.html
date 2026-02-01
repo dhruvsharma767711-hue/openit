@@ -173,6 +173,58 @@
         audio.play();
     });
 </script>
+<script>
+  const audio = document.getElementById("bgAudio") || document.querySelector("audio");
+  const yesBtn = document.getElementById("yes");
+
+  // Diagnostic: print key info when page loads
+  console.log("audio.currentSrc:", audio && audio.currentSrc);
+  console.log("audio.canPlayType('audio/mpeg'):", audio && audio.canPlayType && audio.canPlayType('audio/mpeg'));
+  console.log("audio.readyState:", audio && audio.readyState);
+
+  yesBtn.addEventListener("click", async () => {
+    // show the message immediately
+    document.getElementById("loveText").style.display = "block";
+    yesBtn.style.display = "none";
+    document.getElementById("no").style.display = "none";
+
+    if (!audio) {
+      console.error("No audio element found");
+      return;
+    }
+
+    // ensure the audio resource is loaded
+    try {
+      audio.load();
+      console.log("Called audio.load(); readyState now:", audio.readyState);
+    } catch (e) {
+      console.warn("audio.load() threw:", e);
+    }
+
+    // Try to play and log any rejection
+    try {
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        await playPromise;
+        console.log("Playback started successfully");
+      } else {
+        console.log("audio.play() returned no promise (older browser)");
+      }
+    } catch (err) {
+      console.error("Playback failed:", err);
+      // show the controls so the user can try manually
+      audio.controls = true;
+      // Useful debug info
+      console.log("audio.paused:", audio.paused, "currentTime:", audio.currentTime, "muted:", audio.muted);
+      if (audio.error) {
+        console.error("MediaError:", audio.error.code);
+      }
+      // Optionally show a small on-screen message for the user
+      alert("Couldn't start audio programmatically — please press the ▶️ play button on the audio control.");
+    }
+  });
+</script>
 
 </body>
 </html>
+
