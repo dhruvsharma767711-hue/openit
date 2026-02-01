@@ -129,7 +129,8 @@
         "Come on… think again 💕",
         "Don’t do this to me 🥺",
         "This button is lying 😌",
-        "Okay, now just say yes ❤️"
+        "Okay, now just say yes ❤️,
+        "Yes",
     ];
 
     let count = 0;
